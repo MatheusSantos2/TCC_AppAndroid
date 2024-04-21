@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="owl_color_primary">#00ffd5</color>
+  <color name="owl_color_primary_dark">#00ffd5</color>
+  <color name="owl_color_accent">#425066</color>
+
+  <color name="owl_is_color_light_gray">#E4E4E4</color>
+</resources>

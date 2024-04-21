@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#00000000"
+    tools:context="Main.MainActivity">
+
+    <LinearLayout
+        android:id="@+id/images_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingTop="?attr/actionBarSize">
+
+        <LinearLayout
+            android:layout_width="394dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal">
+
+            <FrameLayout
+                android:id="@+id/view_finder"
+                android:layout_width="394dp"
+                android:layout_height="300dp"
+                android:paddingTop="16dp">
+
+            </FrameLayout>
+        </LinearLayout>
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="SpeakableTextPresentCheck">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/original_imageview"
+                    android:layout_width="@dimen/owl_is_preview_size"
+                    android:layout_height="@dimen/owl_is_preview_size"
+                    android:padding="8dp" />
+
+                <ImageView
+                    android:id="@+id/result_imageview_segmentation"
+                    android:layout_width="@dimen/owl_is_preview_size"
+                    android:layout_height="@dimen/owl_is_preview_size"
+                    android:padding="8dp" />
+
+                <ImageView
+                    android:id="@+id/result_imageview_depth"
+                    android:layout_width="@dimen/owl_is_preview_size"
+                    android:layout_height="@dimen/owl_is_preview_size"
+                    android:padding="8dp" />
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/pause_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_marginEnd="8dp"
+        android:clickable="true"
+        app:backgroundTint="@android:color/white"
+        app:layout_anchor="@+id/dummy"
+        app:layout_anchorGravity="bottom|center"
+        app:srcCompat="@android:drawable/ic_media_pause"
+        tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
+
+    <View
+        android:id="@+id/dummy"
+        android:layout_width="358dp"
+        android:layout_height="70dp"
+        android:layout_marginEnd="8dp"
+        app:layout_anchor="@+id/images_container"
+        app:layout_anchorGravity="bottom|center" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/toggle_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_marginEnd="8dp"
+        android:clickable="true"
+        app:backgroundTint="@android:color/white"
+        app:layout_anchor="@+id/dummy"
+        app:layout_anchorGravity="end|bottom"
+        app:srcCompat="@android:drawable/ic_popup_sync"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/capture_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_marginEnd="8dp"
+        android:clickable="true"
+        app:backgroundTint="@android:color/white"
+        app:layout_anchor="@+id/dummy"
+        app:layout_anchorGravity="bottom|center"
+        app:srcCompat="@android:drawable/ic_media_play"
+        tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/export_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_marginEnd="8dp"
+        android:clickable="true"
+        app:backgroundTint="@android:color/white"
+        app:layout_anchor="@+id/dummy"
+        app:layout_anchorGravity="start|bottom"
+        app:srcCompat="@android:drawable/ic_menu_share"
+        tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

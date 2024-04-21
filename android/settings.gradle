@@ -1,0 +1,3 @@
+rootProject.name = 'OwlVision'
+include ':app', ':lib_interpreter', ':lib_utils', ':lib_core'
+include ':openCV'

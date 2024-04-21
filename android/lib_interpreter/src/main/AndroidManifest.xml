@@ -1,0 +1,4 @@
+<manifest>
+    <!-- Do not remove, it is needed for internal build system -->
+    <uses-sdk />
+</manifest>
