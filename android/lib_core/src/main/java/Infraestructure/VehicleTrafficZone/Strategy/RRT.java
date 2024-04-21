@@ -1,4 +1,4 @@
-package Infraestructure.Strategy;
+package Infraestructure.VehicleTrafficZone.Strategy;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Random;
 
 import Models.Node;
-import Utils.RTTHelper;
 import Variables.Constants;
 
 public class RRT {

@@ -1,4 +1,4 @@
-package Infraestructure.VehicleTrafficZone;
+package Infraestructure.VehicleTrafficZone.Image;
 
 import org.opencv.calib3d.Calib3d;
 import org.opencv.core.CvType;
@@ -8,8 +8,11 @@ import org.opencv.core.Point;
 
 import Models.Point2D;
 import Models.Point3D;
+import Variables.Constants;
 
 public class ImageRedesigner {
+
+    private Constants constants = new Constants();
 
     public static final Mat CAMERA_MATRIX = new Mat(3, 3, CvType.CV_64F) {{
         put(0, 0, 2.95389836e+03);
@@ -31,7 +34,7 @@ public class ImageRedesigner {
         put(0, 4, 0.17199612);
     }};
 
-    private Mat resizeMatrix = resizeCameraMatrix(CAMERA_MATRIX, 192, 640);
+    private Mat resizeMatrix = resizeCameraMatrix(CAMERA_MATRIX, constants.ResizedWidth, constants.ResizedHeight);
 
     public Point3D getRealPositions(Point2D imageCoordinates, int pixel, int positionXSize, int positionYSize)
     {

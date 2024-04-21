@@ -1,4 +1,4 @@
-package Infraestructure.Strategy;
+package Infraestructure.VehicleTrafficZone.Strategy;
 
 import java.util.ArrayList;
 import java.util.Collections;

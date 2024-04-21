@@ -1,4 +1,4 @@
-package Utils;
+package Infraestructure.VehicleTrafficZone.Strategy;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;

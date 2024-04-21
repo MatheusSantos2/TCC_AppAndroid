@@ -3,23 +3,17 @@ package Main
 import Infraestructure.DataAccess.DataExportHelper
 import Infraestructure.DataAccess.ImageDriveHelper
 import Infraestructure.DataAccess.MonitoringSqlLiteHelper
-import Infraestructure.Senders.TcpIpClient
 import Interpreter.MLExecutors.DepthEstimationModelExecutor
-import Interpreter.MLExecutors.SemanticSegmentationModelExecutor
 import Interpreter.Models.ModelViewResult
 import Infraestructure.Camera.CameraFragment
-import Utils.StringHelper
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.hardware.SensorManager
 import android.hardware.camera2.CameraCharacteristics
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Process
-import android.text.TextUtils
 import android.util.Log
 import android.view.animation.AnimationUtils
 import android.view.animation.BounceInterpolator
@@ -37,7 +31,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.opencv.android.OpenCVLoader
 import java.io.File
-import java.io.IOException
 import java.util.concurrent.Executors
 
 
@@ -60,29 +53,14 @@ class MainActivity : AppCompatActivity(), CameraFragment.OnCaptureFinished
 
   private lateinit var captureHandlerThread: HandlerThread
   private lateinit var captureHandler: Handler
-  private lateinit var messageHandler: Handler
-
-  private var lastSavedFile = ""
-  private val folderPath = "owlvision/images"
 
   private var depthEstimationExecutor: DepthEstimationModelExecutor? = null
-  private var semanticSegmentationExecutor: SemanticSegmentationModelExecutor? = null
   private var inferenceThread = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-  private var tcpIpClient = TcpIpClient(this)
 
   private var lensFacing = CameraCharacteristics.LENS_FACING_FRONT
   private var isCapturing = false
 
   private lateinit var database: MonitoringSqlLiteHelper
-
-  private var messageBuffer = mutableListOf<String>()
-  private var timerRunnable = object : Runnable {
-    override fun run() {
-      saveMessage()
-      messageBuffer.clear()
-      messageHandler.postDelayed(this, 6000L)
-    }
-  }
 
   override fun onCreate(savedInstanceState: Bundle?)
   {
@@ -109,7 +87,7 @@ class MainActivity : AppCompatActivity(), CameraFragment.OnCaptureFinished
     }
 
     database = MonitoringSqlLiteHelper(this)
-    imageDrive = ImageDriveHelper(this, folderPath)
+    imageDrive = ImageDriveHelper(this)
 
     viewModel = AndroidViewModelFactory(application).create(MLExecutionViewModel::class.java)
     viewModel.resultingBitmap.observe(
@@ -118,9 +96,10 @@ class MainActivity : AppCompatActivity(), CameraFragment.OnCaptureFinished
         if (resultImage != null) {
           updateUIWithResults(resultImage)
 
-          if(!resultImage.message.isNullOrEmpty()) {
+          if(!resultImage.message.isNullOrEmpty())
+          {
             saveImages(resultImage)
-            sendMessage("Trajectory", resultImage.message)
+            database.insert(resultImage.message)
           }
         }
       }
@@ -130,11 +109,6 @@ class MainActivity : AppCompatActivity(), CameraFragment.OnCaptureFinished
     animateCameraButton()
 
     setupControls()
-    startDataReceiver()
-
-    messageHandler = Handler()
-    messageHandler.postDelayed(timerRunnable, 6000L)
-
   }
 
   private fun setupControls()
@@ -198,18 +172,14 @@ class MainActivity : AppCompatActivity(), CameraFragment.OnCaptureFinished
 
   private fun createModelExecutor()
   {
-    if (depthEstimationExecutor != null && semanticSegmentationExecutor != null)
+    if (depthEstimationExecutor != null)
     {
       depthEstimationExecutor!!.close()
       depthEstimationExecutor = null
-
-      semanticSegmentationExecutor!!.close()
-      semanticSegmentationExecutor = null
     }
     try
     {
       depthEstimationExecutor = DepthEstimationModelExecutor(this)
-      semanticSegmentationExecutor = SemanticSegmentationModelExecutor(this)
     }
     catch (e: Exception)
     {
@@ -261,7 +231,7 @@ class MainActivity : AppCompatActivity(), CameraFragment.OnCaptureFinished
     captureHandler.postDelayed({
       runBlocking {
         capturePhoto()
-        delay(5000)
+        delay(500000)
         if (isCapturing) {
           startCaptureTimer()
         }
@@ -286,8 +256,7 @@ class MainActivity : AppCompatActivity(), CameraFragment.OnCaptureFinished
     val msg = "Photo capture succeeded: ${file.absolutePath}"
     Log.d(TAG, msg)
 
-    lastSavedFile = file.absolutePath
-    viewModel.onApplyModel(file.absolutePath, depthEstimationExecutor, semanticSegmentationExecutor, inferenceThread)
+    viewModel.onApplyModel(file.absolutePath, depthEstimationExecutor, inferenceThread)
   }
 
   override fun onResume() {
@@ -296,65 +265,6 @@ class MainActivity : AppCompatActivity(), CameraFragment.OnCaptureFinished
 
   override fun onPause() {
     super.onPause()
-  }
-
-  private fun startDataReceiver()
-  {
-    val thread = Thread {
-      try
-      {
-        if(!tcpIpClient.hasConnected())
-          tcpIpClient.connect()
-
-        var message :String
-        while (true)
-        {
-          if(tcpIpClient.hasConnected())
-          {
-            message = tcpIpClient.receiveMessage()
-            if(!TextUtils.isEmpty(message))
-              messageBuffer.add(message)
-          }
-        }
-      } catch (e: IOException) {
-        e.printStackTrace()
-      }
-    }
-
-    thread.start()
-  }
-
-  private fun saveMessage()
-  {
-    val copyBuffer = messageBuffer.toList()
-    var count = 0
-    for (message in copyBuffer)
-    {
-      database.insert(message)
-
-      if(count > 100)
-        break
-      count++
-    }
-  }
-
-  private fun sendMessage(label:String, message: String){
-    val thread = Thread {
-
-      if(!tcpIpClient.hasConnected())
-        tcpIpClient.connect()
-
-      try
-      {
-        if(tcpIpClient.hasConnected()){
-          tcpIpClient.sendMessage(label, message)
-        }
-      }
-      catch (e: IOException){
-        Log.e(TAG, "Fail to send message - Exception: ${e.message}")
-      }
-    }
-    thread.start()
   }
 
   private fun saveImages(modelViewResult: ModelViewResult)
@@ -369,6 +279,6 @@ class MainActivity : AppCompatActivity(), CameraFragment.OnCaptureFinished
   }
 
   private fun exportData() {
-    DataExportHelper(this, folderPath).export()
+    DataExportHelper(this).export()
   }
 }

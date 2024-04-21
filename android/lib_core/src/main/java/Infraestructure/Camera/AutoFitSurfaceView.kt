@@ -33,7 +33,6 @@ class AutoFitSurfaceView(
     }
     else
     {
-      // Performs center-crop transformation of the camera frames
       val newWidth: Int
       val newHeight: Int
       if (width < height * aspectRatio)
