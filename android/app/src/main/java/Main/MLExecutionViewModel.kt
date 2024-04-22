@@ -14,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.opencv.core.Mat
 import java.io.File
 
 private const val TAG = "MLExecutionViewModel"
@@ -37,7 +38,7 @@ class MLExecutionViewModel : ViewModel()
         var bitmapsMlResult = getMLResult(filePath, depthEstimationModel!!)
 
         var resultTransversalZone = TrajectoryEstimator()
-                                    .getTraversableZone(bitmapsMlResult.first, bitmapsMlResult.second)
+                                    .getTraversableZone(bitmapsMlResult.first, bitmapsMlResult.second, bitmapsMlResult.third)
 
         var resultModelView =  ModelViewResult(
                                   bitmapsMlResult.first,
@@ -58,12 +59,12 @@ class MLExecutionViewModel : ViewModel()
     }
   }
 
-  private fun getMLResult(filePath: String, depthEstimationModel : DepthEstimationModelExecutor):  Pair<Bitmap, Bitmap>
+  private fun getMLResult(filePath: String, depthEstimationModel : DepthEstimationModelExecutor):  Triple<Bitmap, Bitmap, Mat>
   {
     var contentImage = ImageHelper.decodeBitmap(File(filePath))
 
     var depthResult = depthEstimationModel?.execute(contentImage)
 
-    return Pair(depthResult.bitmapOriginal, depthResult.bitmapResult)
+    return Triple(depthResult.bitmapOriginal, depthResult.bitmapResult, depthResult.blendMat)
   }
 }

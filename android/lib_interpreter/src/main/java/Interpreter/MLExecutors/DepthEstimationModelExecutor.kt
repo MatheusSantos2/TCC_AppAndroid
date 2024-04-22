@@ -1,7 +1,7 @@
 package Interpreter.MLExecutors
 
 import Interpreter.Models.ModelExecutionResult
-import Interpreter.OpenCV.OpenCVHelper
+import Interpreter.OpenCV.DepthEstimationExtensions
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.SystemClock
@@ -11,6 +11,8 @@ import java.io.IOException
 import java.nio.channels.FileChannel
 import org.tensorflow.lite.Interpreter
 import Utils.ImageHelper
+import org.opencv.core.CvType
+import org.opencv.core.Mat
 import java.nio.*
 
 class DepthEstimationModelExecutor(context: Context)
@@ -98,11 +100,11 @@ class DepthEstimationModelExecutor(context: Context)
       val outputBitmapResized = ImageHelper.scaleBitmapAndKeepRatio(outputBitmap, imageHeightSizeDefault, imageWidthSizeDefault)
       val originalBitmapResized = ImageHelper.scaleBitmapAndKeepRatio(originalBitmap, imageHeightSizeDefault, imageWidthSizeDefault)
 
-      val output = OpenCVHelper().depthEstimationVisualization(originalBitmapResized, outputBitmapResized)
+      val output = DepthEstimationExtensions().depthEstimationVisualization(originalBitmapResized, outputBitmapResized)
       fullTimeExecutionTime = SystemClock.uptimeMillis() - fullTimeExecutionTime
       Log.d(TAG, "Total time execution $fullTimeExecutionTime")
 
-      return ModelExecutionResult(output, originalBitmapResized)
+      return ModelExecutionResult(output.first, originalBitmapResized, output.second)
     }
     catch (e: Exception)
     {
@@ -110,7 +112,7 @@ class DepthEstimationModelExecutor(context: Context)
       Log.d(TAG, exceptionLog)
 
       val emptyBitmap = ImageHelper.createEmptyBitmap(imageInputSizeWidth, imageInputSizeHeight)
-      return ModelExecutionResult(emptyBitmap, emptyBitmap)
+      return ModelExecutionResult(emptyBitmap, emptyBitmap, Mat(emptyBitmap.height, emptyBitmap.width, CvType.CV_8UC3))
     }
   }
 }

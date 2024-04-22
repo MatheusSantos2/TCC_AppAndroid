@@ -4,18 +4,19 @@ import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.util.Pair;
 
+import org.opencv.core.Mat;
+import org.opencv.core.Point3;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import Infraestructure.VehicleTrafficZone.Image.ImageGenerator;
 import Infraestructure.VehicleTrafficZone.Image.ImageRedesigner;
+import Infraestructure.VehicleTrafficZone.Image.SceneRedesign;
 import Infraestructure.VehicleTrafficZone.Strategy.AStar;
 import Infraestructure.VehicleTrafficZone.Strategy.RRT;
-import Infraestructure.VehicleTrafficZone.Image.ImageGenerator;
 import Infraestructure.VehicleTrafficZone.Strategy.RTTHelper;
-
 import Models.Node;
-import Models.Point2D;
-import Models.Point3D;
 import Variables.Constants;
 
 public class TrajectoryEstimator
@@ -27,38 +28,14 @@ public class TrajectoryEstimator
     private RTTHelper rrtHelper = new RTTHelper();
     private Constants constants = new Constants();
 
-    public Pair<Bitmap, List<PointF>> getTraversableZone(Bitmap originalMap, Bitmap depthMap)
+    public Pair<Bitmap, List<PointF>> getTraversableZone(Bitmap originalMap, Bitmap depthMap, Mat depthMat)
     {
-        //fazer a reprojeção da cena
+        ArrayList<Point3> scene = SceneRedesign.calculate3DCoordinates(depthMat);
+        Bitmap topView = new SceneRedesign().generateTopViewBitmap(scene, depthMat);
 
-        List<Point3D> coordinateList = generateListPointsTraversable(depthMap);
-
-        Bitmap imageXZ = imageGenerator.createBitmapImageXZ(coordinateList, constants.LimitImageWidth, constants.LimitImageHeight);
-
-        //Bitmap newImage2 = imageGenerator.mapColors(imageXZ, Color.WHITE);
-
-        //imageGenerator.createMagentaStain(newImage2, 1, Color.MAGENTA, 2);
-
-        Pair<List<PointF>, Bitmap> result = generateListTrajectory(imageXZ);
+        Pair<List<PointF>, Bitmap> result = generateListTrajectory(topView);
 
         return new Pair(result.second, result.first);
-    }
-
-    private List<Point3D> generateListPointsTraversable(Bitmap depthMap)
-    {
-        Bitmap resizedDepthMap = imageGenerator.resizeBitmap(depthMap, constants.ResizedWidth, constants.ResizedHeight);
-        List<Point3D> coordinateList = new ArrayList<Point3D>();
-
-        for (int y = 0; y < resizedDepthMap.getWidth(); y++) {
-            for (int x = 0; x < resizedDepthMap.getHeight(); x++) {
-                Point2D pointPixel = new Point2D(x, y);
-                int depthPixel = resizedDepthMap.getPixel(x, y);
-                Point3D realCoordinate = imageRedesigner.getRealPositions(pointPixel, depthPixel, constants.SceneWidth, constants.SceneHeight);
-                coordinateList.add(realCoordinate);
-            }
-        }
-
-        return coordinateList;
     }
 
     private Pair<List<PointF>, Bitmap> generateListTrajectory(Bitmap image){

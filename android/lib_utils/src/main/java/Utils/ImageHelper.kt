@@ -4,6 +4,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import androidx.exifinterface.media.ExifInterface
+import org.opencv.android.Utils
+import org.opencv.core.CvType
+import org.opencv.core.Mat
+import org.opencv.imgproc.Imgproc
 import java.io.File
 import java.nio.FloatBuffer
 
@@ -152,6 +156,49 @@ abstract class ImageHelper
       }
 
       return pixelValues
+    }
+
+    fun matToBitmap(mat: Mat): Bitmap?
+    {
+      val bitmap: Bitmap
+      val numChannels = mat.channels()
+
+      if (numChannels == 1)
+      {
+        val grayMat = Mat(mat.height(), mat.width(), CvType.CV_8UC1)
+        Imgproc.cvtColor(mat, grayMat, Imgproc.COLOR_GRAY2RGBA)
+        bitmap = Bitmap.createBitmap(grayMat.width(), grayMat.height(), Bitmap.Config.ARGB_8888)
+        Utils.matToBitmap(grayMat, bitmap)
+      }
+      else if (numChannels == 3)
+      {
+        Imgproc.cvtColor(mat, mat, Imgproc.COLOR_RGB2RGBA)
+        bitmap = Bitmap.createBitmap(mat.width(), mat.height(), Bitmap.Config.ARGB_8888)
+        Utils.matToBitmap(mat, bitmap)
+      }
+      else if (numChannels == 4)
+      {
+        bitmap = Bitmap.createBitmap(mat.width(), mat.height(), Bitmap.Config.ARGB_8888)
+        Utils.matToBitmap(mat, bitmap)
+      } else return null
+
+      return bitmap
+    }
+
+    fun bitmapToMat(bitmap: Bitmap): Mat
+    {
+      val mat = Mat(bitmap.height, bitmap.width, CvType.CV_8UC4)
+      Utils.bitmapToMat(bitmap, mat)
+      Imgproc.cvtColor(mat, mat, Imgproc.COLOR_RGBA2BGR)
+      return mat
+    }
+
+    fun bitmapToMatGray(bitmap: Bitmap): Mat
+    {
+      val mat = Mat(bitmap.height, bitmap.width, CvType.CV_8UC4)
+      Utils.bitmapToMat(bitmap, mat)
+      Imgproc.cvtColor(mat, mat, Imgproc.COLOR_BGR2GRAY)
+      return mat
     }
   }
 }
