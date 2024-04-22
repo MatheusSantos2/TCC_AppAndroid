@@ -8,9 +8,9 @@ import org.opencv.imgproc.Imgproc.applyColorMap
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.support.image.TensorImage
 
-class OpenCVHelper {
+class DepthEstimationModelExtensions {
 
-    fun depthEstimationVisualization(originalImage: Bitmap, resultImage: Bitmap): Bitmap
+    fun depthEstimationVisualization(originalImage: Bitmap, resultImage: Bitmap): Pair<Bitmap, Mat>
     {
         val originalTensorImage = TensorImage(DataType.FLOAT32)
         val resultTensorImage = TensorImage(DataType.FLOAT32)
@@ -28,7 +28,7 @@ class OpenCVHelper {
         val blendedMat = Mat(originalImage.height, originalImage.width, CvType.CV_8UC3)
         Core.addWeighted(bitmapToMat(originalImage), alpha, outputMat, beta, 0.0, blendedMat)
 
-        return matToBitmap(blendedMat)!!
+        return Pair(matToBitmap(blendedMat)!!, blendedMat)
     }
 
     private fun matToBitmap(mat: Mat): Bitmap?
