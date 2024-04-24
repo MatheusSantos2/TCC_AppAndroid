@@ -1,4 +1,4 @@
-package Infraestructure.Services.Image;
+package Infraestructure.Services.ImageServices;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 import Utils.ImageHelper;
 
-public class SceneRedesign {
+public class SceneRedesignService {
 
     public static final Mat CAMERA_MATRIX = new Mat(3, 3, CvType.CV_64F) {{
         put(0, 0, 2.95389836e+03);

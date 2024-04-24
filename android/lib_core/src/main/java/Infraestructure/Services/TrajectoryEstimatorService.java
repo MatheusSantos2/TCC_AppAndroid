@@ -1,6 +1,7 @@
 package Infraestructure.Services;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.PointF;
 import android.util.Pair;
 
@@ -10,28 +11,27 @@ import org.opencv.core.Point3;
 import java.util.ArrayList;
 import java.util.List;
 
-import Infraestructure.Services.Image.ImageGenerator;
-import Infraestructure.Services.Image.ImageRedesigner;
-import Infraestructure.Services.Image.SceneRedesign;
-import Infraestructure.Services.Strategy.AStar;
-import Infraestructure.Services.Strategy.RRT;
-import Infraestructure.Services.Strategy.RTTHelper;
+import Infraestructure.Services.ImageServices.ImageRedesignerService;
+import Infraestructure.Services.ImageServices.SceneRedesignService;
+import Infraestructure.Services.StrategyServices.AStar;
+import Infraestructure.Services.StrategyServices.RRT;
+import Infraestructure.Services.StrategyServices.RTTHelper;
 import Models.Node;
+import Utils.ImageHelper;
 import Variables.Constants;
 
-public class TrajectoryEstimator
+public class TrajectoryEstimatorService
 {
     private AStar aStar = new AStar();
-    private ImageRedesigner imageRedesigner = new ImageRedesigner();
-    private ImageGenerator imageGenerator = new ImageGenerator();
+    private ImageRedesignerService imageRedesigner = new ImageRedesignerService();
     private RRT rrt = new RRT();
     private RTTHelper rrtHelper = new RTTHelper();
     private Constants constants = new Constants();
 
     public Pair<Bitmap, List<PointF>> getTraversableZone(Bitmap originalMap, Bitmap depthMap, Mat depthMat)
     {
-        ArrayList<Point3> scene = SceneRedesign.calculate3DCoordinates(depthMat);
-        Bitmap topView = new SceneRedesign().generateTopViewBitmap(scene, depthMat);
+        ArrayList<Point3> scene = SceneRedesignService.calculate3DCoordinates(depthMat);
+        Bitmap topView = new SceneRedesignService().generateTopViewBitmap(scene, depthMat);
 
         Pair<List<PointF>, Bitmap> result = generateListTrajectory(topView);
 
@@ -56,7 +56,7 @@ public class TrajectoryEstimator
                 return new Pair<>(rrtHelper.convertNodesToPositions(first, constants.ImageWidth, constants.SceneWidth), pairRtt.second);
             }
         } catch (Exception e) {
-            return new Pair<>(new ArrayList<PointF>(), imageGenerator.createEmptyImage(100, 100));
+            return new Pair<>(new ArrayList<PointF>(), ImageHelper.Companion.createEmptyBitmap(100, 100, Color.WHITE));
         }
         return null;
     }

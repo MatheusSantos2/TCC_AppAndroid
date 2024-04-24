@@ -1,4 +1,4 @@
-package Infraestructure.Services.Image;
+package Infraestructure.Services.ImageServices;
 
 import org.opencv.calib3d.Calib3d;
 import org.opencv.core.CvType;
@@ -10,7 +10,7 @@ import Models.Point2D;
 import Models.Point3D;
 import Variables.Constants;
 
-public class ImageRedesigner {
+public class ImageRedesignerService {
 
     private Constants constants = new Constants();
 

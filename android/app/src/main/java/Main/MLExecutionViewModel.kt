@@ -1,6 +1,6 @@
 package Main
 
-import Infraestructure.Services.TrajectoryEstimator
+import Infraestructure.Services.TrajectoryEstimatorService
 import Interpreter.MLExecutors.DepthEstimationModelExecutor
 import Interpreter.Models.ModelViewResult
 import Utils.ImageHelper
@@ -37,7 +37,7 @@ class MLExecutionViewModel : ViewModel()
       {
         var bitmapsMlResult = getMLResult(filePath, depthEstimationModel!!)
 
-        var resultTransversalZone = TrajectoryEstimator()
+        var resultTransversalZone = TrajectoryEstimatorService()
                                     .getTraversableZone(bitmapsMlResult.first, bitmapsMlResult.second, bitmapsMlResult.third)
 
         var resultModelView =  ModelViewResult(

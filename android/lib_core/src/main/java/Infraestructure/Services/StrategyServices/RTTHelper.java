@@ -1,4 +1,4 @@
-package Infraestructure.Services.Strategy;
+package Infraestructure.Services.StrategyServices;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
