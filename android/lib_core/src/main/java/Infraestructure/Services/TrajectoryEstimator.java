@@ -1,4 +1,4 @@
-package Infraestructure.VehicleTrafficZone;
+package Infraestructure.Services;
 
 import android.graphics.Bitmap;
 import android.graphics.PointF;
@@ -10,12 +10,12 @@ import org.opencv.core.Point3;
 import java.util.ArrayList;
 import java.util.List;
 
-import Infraestructure.VehicleTrafficZone.Image.ImageGenerator;
-import Infraestructure.VehicleTrafficZone.Image.ImageRedesigner;
-import Infraestructure.VehicleTrafficZone.Image.SceneRedesign;
-import Infraestructure.VehicleTrafficZone.Strategy.AStar;
-import Infraestructure.VehicleTrafficZone.Strategy.RRT;
-import Infraestructure.VehicleTrafficZone.Strategy.RTTHelper;
+import Infraestructure.Services.Image.ImageGenerator;
+import Infraestructure.Services.Image.ImageRedesigner;
+import Infraestructure.Services.Image.SceneRedesign;
+import Infraestructure.Services.Strategy.AStar;
+import Infraestructure.Services.Strategy.RRT;
+import Infraestructure.Services.Strategy.RTTHelper;
 import Models.Node;
 import Variables.Constants;
 

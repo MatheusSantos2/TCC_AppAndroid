@@ -1,4 +1,4 @@
-package Infraestructure.VehicleTrafficZone.Image;
+package Infraestructure.Services.Image;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;

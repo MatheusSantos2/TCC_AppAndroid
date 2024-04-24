@@ -1,6 +1,6 @@
 package Main
 
-import Infraestructure.VehicleTrafficZone.TrajectoryEstimator
+import Infraestructure.Services.TrajectoryEstimator
 import Interpreter.MLExecutors.DepthEstimationModelExecutor
 import Interpreter.Models.ModelViewResult
 import Utils.ImageHelper

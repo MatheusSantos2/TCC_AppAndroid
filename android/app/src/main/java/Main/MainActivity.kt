@@ -2,7 +2,7 @@ package Main
 
 import Infraestructure.DataAccess.DataExportHelper
 import Infraestructure.DataAccess.ImageDriveHelper
-import Infraestructure.DataAccess.MonitoringSqlLiteHelper
+import Infraestructure.DataAccess.MonitoringRepository
 import Interpreter.MLExecutors.DepthEstimationModelExecutor
 import Interpreter.Models.ModelViewResult
 import Infraestructure.Camera.CameraFragment
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity(), CameraFragment.OnCaptureFinished
   private var lensFacing = CameraCharacteristics.LENS_FACING_FRONT
   private var isCapturing = false
 
-  private lateinit var database: MonitoringSqlLiteHelper
+  private lateinit var database: MonitoringRepository
 
   override fun onCreate(savedInstanceState: Bundle?)
   {
@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity(), CameraFragment.OnCaptureFinished
       ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
     }
 
-    database = MonitoringSqlLiteHelper(this)
+    database = MonitoringRepository(this)
     imageDrive = ImageDriveHelper(this)
 
     viewModel = AndroidViewModelFactory(application).create(MLExecutionViewModel::class.java)

@@ -8,13 +8,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MonitoringSqlLiteHelper extends SQLiteOpenHelper
+public class MonitoringRepository extends SQLiteOpenHelper
 {
     private static final String DATABASE_NAME = "Monitoring.db";
     private static final int DATABASE_VERSION = 1;
     private static final String TABLE_NAME = "Monitoring";
 
-    public MonitoringSqlLiteHelper(Context context) {
+    public MonitoringRepository(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

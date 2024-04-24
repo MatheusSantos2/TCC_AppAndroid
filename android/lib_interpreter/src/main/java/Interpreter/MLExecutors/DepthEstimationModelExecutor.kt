@@ -1,7 +1,7 @@
 package Interpreter.MLExecutors
 
 import Interpreter.Models.ModelExecutionResult
-import Interpreter.OpenCV.DepthEstimationExtensions
+import Interpreter.OpenCV.DepthEstimationModelExtensions
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.SystemClock
@@ -100,7 +100,7 @@ class DepthEstimationModelExecutor(context: Context)
       val outputBitmapResized = ImageHelper.scaleBitmapAndKeepRatio(outputBitmap, imageHeightSizeDefault, imageWidthSizeDefault)
       val originalBitmapResized = ImageHelper.scaleBitmapAndKeepRatio(originalBitmap, imageHeightSizeDefault, imageWidthSizeDefault)
 
-      val output = DepthEstimationExtensions().depthEstimationVisualization(originalBitmapResized, outputBitmapResized)
+      val output = DepthEstimationModelExtensions().depthEstimationVisualization(originalBitmapResized, outputBitmapResized)
       fullTimeExecutionTime = SystemClock.uptimeMillis() - fullTimeExecutionTime
       Log.d(TAG, "Total time execution $fullTimeExecutionTime")
 

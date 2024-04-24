@@ -8,7 +8,7 @@ import org.opencv.imgproc.Imgproc.applyColorMap
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.support.image.TensorImage
 
-class DepthEstimationExtensions {
+class DepthEstimationModelExtensions {
 
     fun depthEstimationVisualization(originalImage: Bitmap, resultImage: Bitmap): Pair<Bitmap, Mat>
     {
