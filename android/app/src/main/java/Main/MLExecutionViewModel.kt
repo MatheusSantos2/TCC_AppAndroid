@@ -1,6 +1,6 @@
 package Main
 
-import Infraestructure.Services.TrajectoryEstimatorService
+import Infraestructure.Services.StrategyServices.TrajectoryGeneratorService
 import Interpreter.MLExecutors.DepthEstimationModelExecutor
 import Interpreter.Models.ModelViewResult
 import Utils.ImageHelper
@@ -14,7 +14,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import org.opencv.core.Mat
 import java.io.File
 
 private const val TAG = "MLExecutionViewModel"
@@ -37,15 +36,15 @@ class MLExecutionViewModel : ViewModel()
       {
         var bitmapsMlResult = getMLResult(filePath, depthEstimationModel!!)
 
-        var resultTransversalZone = TrajectoryEstimatorService()
-                                    .getTraversableZone(bitmapsMlResult.first, bitmapsMlResult.second, bitmapsMlResult.third)
+        var resultTransversalZone = TrajectoryGeneratorService()
+                                    .getTraversableZone(bitmapsMlResult.first, bitmapsMlResult.second)
 
         var resultModelView =  ModelViewResult(
                                   bitmapsMlResult.first,
                                   bitmapsMlResult.second,
-                                  resultTransversalZone!!.first,
+                                  resultTransversalZone!!.second,
                                   ImageHelper.decodeBitmap(File(filePath)),
-                                  StringHelper().convertPointsToString(resultTransversalZone!!.second))
+                                  StringHelper().convertPointsToString(resultTransversalZone!!.first))
 
         _resultingBitmap.postValue(resultModelView)
       }
@@ -59,12 +58,12 @@ class MLExecutionViewModel : ViewModel()
     }
   }
 
-  private fun getMLResult(filePath: String, depthEstimationModel : DepthEstimationModelExecutor):  Triple<Bitmap, Bitmap, Mat>
+  private fun getMLResult(filePath: String, depthEstimationModel : DepthEstimationModelExecutor):  Pair<Bitmap, Bitmap>
   {
     var contentImage = ImageHelper.decodeBitmap(File(filePath))
 
     var depthResult = depthEstimationModel?.execute(contentImage)
 
-    return Triple(depthResult.bitmapOriginal, depthResult.bitmapResult, depthResult.blendMat)
+    return Pair(depthResult.bitmapOriginal, depthResult.bitmapResult)
   }
 }

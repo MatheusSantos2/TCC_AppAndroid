@@ -10,7 +10,7 @@ import org.tensorflow.lite.support.image.TensorImage
 
 class DepthEstimationModelExtensions {
 
-    fun depthEstimationVisualization(originalImage: Bitmap, resultImage: Bitmap): Pair<Bitmap, Mat>
+    fun depthEstimationVisualization(originalImage: Bitmap, resultImage: Bitmap): Bitmap
     {
         val originalTensorImage = TensorImage(DataType.FLOAT32)
         val resultTensorImage = TensorImage(DataType.FLOAT32)
@@ -28,6 +28,6 @@ class DepthEstimationModelExtensions {
         val blendedMat = Mat(originalImage.height, originalImage.width, CvType.CV_8UC3)
         Core.addWeighted(ImageHelper.bitmapToMat(originalImage), alpha, outputMat, beta, 0.0, blendedMat)
 
-        return Pair(ImageHelper.matToBitmap(blendedMat)!!, blendedMat)
+        return ImageHelper.matToBitmap(blendedMat)!!
     }
 }

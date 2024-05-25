@@ -14,7 +14,7 @@ import org.apache.commons.math3.fitting.WeightedObservedPoints;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrajectoryGeneratorService {
+public class TrajectoryGeneratorHelper {
 
     public static Pair<List<PointF>, Bitmap> drawCirclesOnBitmap(Bitmap bitmap) {
         Paint paint = new Paint();

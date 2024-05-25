@@ -104,7 +104,7 @@ class DepthEstimationModelExecutor(context: Context)
       fullTimeExecutionTime = SystemClock.uptimeMillis() - fullTimeExecutionTime
       Log.d(TAG, "Total time execution $fullTimeExecutionTime")
 
-      return ModelExecutionResult(output.first, originalBitmapResized, output.second)
+      return ModelExecutionResult(output, originalBitmapResized)
     }
     catch (e: Exception)
     {
@@ -112,7 +112,7 @@ class DepthEstimationModelExecutor(context: Context)
       Log.d(TAG, exceptionLog)
 
       val emptyBitmap = ImageHelper.createEmptyBitmap(imageInputSizeWidth, imageInputSizeHeight)
-      return ModelExecutionResult(emptyBitmap, emptyBitmap, Mat(emptyBitmap.height, emptyBitmap.width, CvType.CV_8UC3))
+      return ModelExecutionResult(emptyBitmap, emptyBitmap)
     }
   }
 }
