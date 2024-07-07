@@ -23,11 +23,6 @@ class DepthEstimationModelExtensions {
         Imgproc.cvtColor(ImageHelper.bitmapToMatGray(resultImage), outputMat, Imgproc.COLOR_GRAY2RGB)
         applyColorMap(outputMat, outputMat, Imgproc.COLORMAP_JET)
 
-        val alpha = 0.02
-        val beta = 1.0 - alpha
-        val blendedMat = Mat(originalImage.height, originalImage.width, CvType.CV_8UC3)
-        Core.addWeighted(ImageHelper.bitmapToMat(originalImage), alpha, outputMat, beta, 0.0, blendedMat)
-
-        return ImageHelper.matToBitmap(blendedMat)!!
+        return ImageHelper.matToBitmap(outputMat)!!
     }
 }
