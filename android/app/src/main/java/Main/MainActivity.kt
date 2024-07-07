@@ -2,7 +2,6 @@ package Main
 
 import Infraestructure.DataAccess.DataExportHelper
 import Infraestructure.DataAccess.ImageDriveHelper
-import Infraestructure.DataAccess.MonitoringRepository
 import Interpreter.MLExecutors.DepthEstimationModelExecutor
 import Interpreter.Models.ModelViewResult
 import Infraestructure.Camera.CameraFragment
@@ -33,7 +32,6 @@ import org.opencv.android.OpenCVLoader
 import java.io.File
 import java.util.concurrent.Executors
 
-
 private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
 private const val REQUEST_CODE_PERMISSIONS = 10
 private const val TAG = "MainActivity"
@@ -45,7 +43,6 @@ class MainActivity : AppCompatActivity(), CameraFragment.OnCaptureFinished
   private lateinit var viewModel: MLExecutionViewModel
   private lateinit var viewFinder: FrameLayout
   private lateinit var resultImageViewDepth: ImageView
-  private lateinit var resultImageViewSegmentation: ImageView
   private lateinit var originalImageView: ImageView
   private lateinit var captureButton: ImageButton
   private lateinit var pauseButton: ImageButton
@@ -60,8 +57,6 @@ class MainActivity : AppCompatActivity(), CameraFragment.OnCaptureFinished
   private var lensFacing = CameraCharacteristics.LENS_FACING_FRONT
   private var isCapturing = false
 
-  private lateinit var database: MonitoringRepository
-
   override fun onCreate(savedInstanceState: Bundle?)
   {
     super.onCreate(savedInstanceState)
@@ -73,7 +68,6 @@ class MainActivity : AppCompatActivity(), CameraFragment.OnCaptureFinished
 
     viewFinder = findViewById(R.id.view_finder)
     resultImageViewDepth = findViewById(R.id.result_imageview_depth)
-    resultImageViewSegmentation = findViewById(R.id.result_imageview_segmentation)
     originalImageView = findViewById(R.id.original_imageview)
     captureButton = findViewById(R.id.capture_button)
     pauseButton = findViewById(R.id.pause_button)
@@ -86,7 +80,6 @@ class MainActivity : AppCompatActivity(), CameraFragment.OnCaptureFinished
       ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
     }
 
-    database = MonitoringRepository(this)
     imageDrive = ImageDriveHelper(this)
 
     viewModel = AndroidViewModelFactory(application).create(MLExecutionViewModel::class.java)
@@ -95,12 +88,6 @@ class MainActivity : AppCompatActivity(), CameraFragment.OnCaptureFinished
       Observer { resultImage ->
         if (resultImage != null) {
           updateUIWithResults(resultImage)
-
-          if(!resultImage.message.isNullOrEmpty())
-          {
-            saveImages(resultImage)
-            database.insert(resultImage.message)
-          }
         }
       }
     )
@@ -161,7 +148,6 @@ class MainActivity : AppCompatActivity(), CameraFragment.OnCaptureFinished
   private fun updateUIWithResults(modelViewResult: ModelViewResult)
   {
     setImageView(resultImageViewDepth, modelViewResult.bitmapResult)
-    setImageView(resultImageViewSegmentation, modelViewResult.bitmapResult2)
     setImageView(originalImageView, modelViewResult.bitmapOriginal)
   }
 
@@ -231,7 +217,7 @@ class MainActivity : AppCompatActivity(), CameraFragment.OnCaptureFinished
     captureHandler.postDelayed({
       runBlocking {
         capturePhoto()
-        delay(500000)
+        delay(50000)
         if (isCapturing) {
           startCaptureTimer()
         }
@@ -269,7 +255,7 @@ class MainActivity : AppCompatActivity(), CameraFragment.OnCaptureFinished
 
   private fun saveImages(modelViewResult: ModelViewResult)
   {
-    val images = arrayOf(modelViewResult.bitmapResult, modelViewResult.bitmapResult2, modelViewResult.bitmapOriginal, modelViewResult.bitmapRRT)
+    val images = arrayOf(modelViewResult.bitmapOriginal, modelViewResult.bitmapResult)
     var count = 0
 
     for (image in images) {

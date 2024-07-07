@@ -1,10 +1,8 @@
 package Main
 
-import Infraestructure.Services.StrategyServices.TrajectoryGeneratorService
 import Interpreter.MLExecutors.DepthEstimationModelExecutor
 import Interpreter.Models.ModelViewResult
 import Utils.ImageHelper
-import Utils.StringHelper
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -36,22 +34,16 @@ class MLExecutionViewModel : ViewModel()
       {
         var bitmapsMlResult = getMLResult(filePath, depthEstimationModel!!)
 
-        var resultTransversalZone = TrajectoryGeneratorService()
-                                    .getTraversableZone(bitmapsMlResult.first, bitmapsMlResult.second)
-
         var resultModelView =  ModelViewResult(
-                                  bitmapsMlResult.first,
-                                  bitmapsMlResult.second,
-                                  resultTransversalZone!!.second,
                                   ImageHelper.decodeBitmap(File(filePath)),
-                                  StringHelper().convertPointsToString(resultTransversalZone!!.first))
+                                  bitmapsMlResult.second)
 
         _resultingBitmap.postValue(resultModelView)
       }
       catch (e: Exception)
       {
         Log.e(TAG, "Fail to execute MLExecutionViewModel: ${e.message}")
-        var resultModelView =  ModelViewResult(ImageHelper.createEmptyBitmap(100, 100), ImageHelper.createEmptyBitmap(100, 100), ImageHelper.createEmptyBitmap(100, 100), ImageHelper.decodeBitmap(File(filePath)),"Fail to execute ImageSegmentationModelExecutor")
+        var resultModelView =  ModelViewResult(ImageHelper.decodeBitmap(File(filePath)), ImageHelper.createEmptyBitmap(100, 100))
 
         _resultingBitmap.postValue(resultModelView)
       }

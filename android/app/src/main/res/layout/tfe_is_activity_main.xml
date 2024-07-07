@@ -46,12 +46,6 @@
                     android:padding="8dp" />
 
                 <ImageView
-                    android:id="@+id/result_imageview_segmentation"
-                    android:layout_width="@dimen/owl_is_preview_size"
-                    android:layout_height="@dimen/owl_is_preview_size"
-                    android:padding="8dp" />
-
-                <ImageView
                     android:id="@+id/result_imageview_depth"
                     android:layout_width="@dimen/owl_is_preview_size"
                     android:layout_height="@dimen/owl_is_preview_size"

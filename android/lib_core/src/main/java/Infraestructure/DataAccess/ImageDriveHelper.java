@@ -2,6 +2,7 @@ package Infraestructure.DataAccess;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import Utils.ImageHelper;
 import Variables.Constants;
 
 public class ImageDriveHelper {
@@ -16,6 +18,7 @@ public class ImageDriveHelper {
     private final File imagesDir;
     private Constants constants = new Constants();
     private Context context;
+    private ImageHelper imageHelper = new ImageHelper();
 
     public ImageDriveHelper(Context context) {
         this.context = context;
@@ -24,13 +27,13 @@ public class ImageDriveHelper {
     }
 
     public void saveBitmap(Bitmap bitmap, int count) {
-
         File file = createImageFile(count);
-        saveBitmapToFile(bitmap, file);
+        Bitmap result = ImageHelper.increaseResolution(bitmap, 2);
+        saveBitmapToFile(result, file);
     }
 
     private File createImageFile(int count) {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss" + "_" + count, Locale.getDefault()).format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmm" + "_" + count, Locale.getDefault()).format(new Date());
         String imageFileName = "IMG_" + timeStamp + ".jpg";
         File imageFile = new File(imagesDir, imageFileName);
         return imageFile;

@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -34,38 +33,8 @@ public class DataExportHelper {
 
     public void export()
     {
-        exportDatabase();
         exportFolderToZip();
         shareFile();
-    }
-
-    private void exportDatabase() {
-        try
-        {
-            File dbFile = context.getDatabasePath("Monitoring.db");
-            File exportFile = new File(folder, "Monitoring.db");
-            copyFile(dbFile, exportFile);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void copyFile(File sourceFile, File destFile) throws IOException {
-        FileChannel source = null;
-        FileChannel destination = null;
-        try {
-            source = new FileInputStream(sourceFile).getChannel();
-            destination = new FileOutputStream(destFile).getChannel();
-            destination.transferFrom(source, 0, source.size());
-        } finally {
-            if (source != null) {
-                source.close();
-            }
-            if (destination != null) {
-                destination.close();
-            }
-        }
     }
 
     private void exportFolderToZip() {

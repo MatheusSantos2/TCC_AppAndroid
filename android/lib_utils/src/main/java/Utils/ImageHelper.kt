@@ -7,11 +7,12 @@ import androidx.exifinterface.media.ExifInterface
 import org.opencv.android.Utils
 import org.opencv.core.CvType
 import org.opencv.core.Mat
+import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
 import java.io.File
 import java.nio.FloatBuffer
 
-abstract class ImageHelper
+class ImageHelper
 {
   companion object
   {
@@ -199,6 +200,24 @@ abstract class ImageHelper
       Utils.bitmapToMat(bitmap, mat)
       Imgproc.cvtColor(mat, mat, Imgproc.COLOR_BGR2GRAY)
       return mat
+    }
+
+    @JvmStatic
+    fun increaseResolution(bitmap: Bitmap, scaleFactor: Double): Bitmap? {
+      // Converter Bitmap para Mat
+      val src = Mat(bitmap.height, bitmap.width, CvType.CV_8UC4)
+      Utils.bitmapToMat(bitmap, src)
+
+      val newWidth = (bitmap.width * scaleFactor).toInt()
+      val newHeight = (bitmap.height * scaleFactor).toInt()
+
+      val dst = Mat(newHeight, newWidth, src.type())
+      Imgproc.resize(src, dst, Size(newWidth.toDouble(), newHeight.toDouble()), 0.0, 0.0, Imgproc.INTER_CUBIC)
+
+      // Converter Mat de volta para Bitmap
+      val resizedBitmap = Bitmap.createBitmap(newWidth, newHeight, bitmap.config)
+      Utils.matToBitmap(dst, resizedBitmap)
+      return resizedBitmap
     }
   }
 }
